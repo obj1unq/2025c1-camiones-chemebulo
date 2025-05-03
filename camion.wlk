@@ -12,12 +12,10 @@ object camion {
 	}
 	
 	method todoPesoPar(){
-		return cosas.all({cosa => cosa.miPesoEsPar()})
+		return cosas.all({cosa => cosa.elPesoEsPar()})
 	}
 	
-	method hayAlgunoQuePasa(peso){
-		return cosas.any({cosa => e})
-	}
+	method hayAlgunoQuePasa(peso){}
 	
 	method elDeNivel(nivel){}
 	

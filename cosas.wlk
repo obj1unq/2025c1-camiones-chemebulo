@@ -3,7 +3,7 @@ object knightRider {
 	
 	method nivelPeligrosidad() = 10
 
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 }
 
 object bumblebee {
@@ -11,7 +11,7 @@ object bumblebee {
 	
 	method peso() = 800
 	
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 
 	method nivelPeligrosidad() = forma.nivelDePeligrosidad()
 }
@@ -21,7 +21,7 @@ object paqueteDeLadrillos {
 
 	method peso() = 2 * cantidadDeLadrillos
 	
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 
 	method nivelPeligrosidad() = 2
 }
@@ -30,75 +30,61 @@ object arenaAGranel {
 	
 	var property peso = 200 // El peso es variable.
 
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 	
 	method nivelPeligrosidad() = 1
 }
 
 object bateriaAntiaerea {
-	var property tieneMisiles = true
+	var property tieneMisiles  = true
 
-	method peso() {
-		return if (self.tieneMisiles()) { 300 } else { 200 }
-	}
+	method peso() = if (tieneMisiles) {300} else {200}
 	
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 
-	method nivelPeligrosidad() {
-		return if (self.tieneMisiles()) { 100 } else { 0 }
-	}
+	method nivelPeligrosidad() = if (tieneMisiles) {100} else {0}
 }
 
 object contenedorPortuario {
 
-	const property cosas = []
+	const property cosasAdentroDelContenedor = [] // La cantidad de cosas que pueden estar adentro del contenedor es variable.
 
-	method peso() = 100 + self.pesoTotalDeLasCosasAdentroDelContainer()
+	method peso() = 100 + self.pesoTotalDeLasCosas()
 	
-	method pesoTotalDeLasCosasAdentroDelContainer() {
-		return cosas.sum({cosa => cosa.peso()})
-	}
+	method pesoTotalDeLasCosas() = cosasAdentroDelContenedor.sum({cosa => cosa.peso()})
 
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 	
-	method nivelPeligrosidad() {
-		return if (self.hayCosasEnElContainer()) {
-					self.peligrosidadDelMasPeligrosoDelContainer()
-				} else { 0 }
-	}
+	method nivelPeligrosidad() = if (self.hayCosasEnElContenedor()) self.peligrosidadDelMasPeligrosoDelContenedor() else { 0 }
 
-	method hayCosasEnElContainer() {
-		return cosas.isEmpty()
-	}
+	method hayCosasEnElContenedor() = not cosasAdentroDelContenedor.isEmpty()
 
-	method peligrosidadDelMasPeligrosoDelContainer() = self.masPeligrosoDelContainer().peligrosidad() 
+	method peligrosidadDelMasPeligrosoDelContenedor() = self.masPeligrosoDelContenedor().peligrosidad() 
 
-	method masPeligrosoDelContainer() {
-		return cosas.max({cosa => cosa.peligrosidad()})
-	}
+	method masPeligrosoDelContenedor() = cosasAdentroDelContenedor.max({cosa => cosa.peligrosidad()})
 }
 
 object residuosRadioactivos {
 	
 	var property peso = 250 // El peso es variable.
 	
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 	
 	method nivelPeligrosidad() = 200
 }
 
 object embalajeDeSeguridad {
 
-	var property cosa = paqueteDeLadrillos // La cosa es variable.
+	var property cosaAEmbalar = paqueteDeLadrillos // La cosa a embalar es variable.
 
-	method peso() = cosa.peso()
+	method peso() = cosaAEmbalar.peso()
 	
-	method miPesoEsPar() = self.peso().even()
+	method elPesoEsPar() = self.peso().even()
 	
-	method nivelPeligrosidad() = cosa.peligrosidad() / 2
+	method nivelPeligrosidad() = cosaAEmbalar.peligrosidad() / 2
 }
 
-//########################## OBJETOS AUXILIARES ##########################
+//########################################### OBJETOS AUXILIARES ###########################################
 
 object auto {
 	method peso() = 100

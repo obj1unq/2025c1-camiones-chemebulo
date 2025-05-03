@@ -1,0 +1,9 @@
+import camion.*
+import cosas.*
+
+describe "Camion" {
+  test "Camion" {
+    // Inicializacion del primer test.
+    assert.that(arenaAGranel.elPesoEsPar())
+  }
+}

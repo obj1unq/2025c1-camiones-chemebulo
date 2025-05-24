@@ -1,9 +1,123 @@
 import camion.*
 import cosas.*
 
-describe "Camion" {
-  test "Camion" {
-    // Inicializacion del primer test.
-    assert.that(arenaAGranel.elPesoEsPar())
-  }
+describe "Pruebas de funcionalidades del camion:" {
+
+    test "El camion puede cargar y descargar." {
+        camion.cargar(knightRider)
+        assert.that(camion.cosas().contains(knightRider))
+
+        camion.descargar(knightRider)
+        assert.that(camion.cosas().isEmpty())
+    }
+
+    test "El camion sabe decir si hay alguna cosa que pesa lo que se le pregunte." {
+        camion.cargar(knightRider)
+        assert.notThat(camion.hayAlgunoQuePesa(50))
+        assert.that(camion.hayAlgunoQuePesa(500))
+    }
+    
+    test "El camion sabe devolver el primer objeto cargado que encuentre, cuyo nivel de peligrosidad coincida exactamente con el valor indicado." {
+        camion.cargar(knightRider)
+        camion.cargar(bumblebee)
+        bumblebee.forma(auto)
+
+        assert.equals(knightRider, camion.elDeNivel(10))
+        assert.equals(bumblebee, camion.elDeNivel(15))
+
+        bumblebee.forma(robot)
+        assert.equals(bumblebee, camion.elDeNivel(30))
+    }
+
+    test "El camion sabe decir su peso total y sabe decir si esta excedido de peso." {
+        assert.equals(1000, camion.pesoTotal())
+        
+        camion.cargar(knightRider)
+        assert.equals(1500, camion.pesoTotal())
+
+        camion.cargar(bumblebee)
+        assert.equals(2300, camion.pesoTotal())
+        assert.notThat(camion.excedidoDePeso())
+
+        camion.cargar(residuosRadioactivos)
+        assert.equals(2550, camion.pesoTotal())
+        assert.that(camion.excedidoDePeso())
+    }
+
+    test "El camion sabe decir los objetos cargados que superan el nivel de peligrosidad indicado." {
+        camion.cargar(knightRider)
+        bumblebee.forma(robot)
+        camion.cargar(bumblebee)
+
+        assert.equals([bumblebee], camion.objetosQueSuperanPeligrosidad(20))
+        assert.equals([knightRider, bumblebee], camion.objetosQueSuperanPeligrosidad(9))
+
+        camion.descargar(bumblebee)
+        assert.equals([], camion.objetosQueSuperanPeligrosidad(20))
+    }
+
+    test "El camion sabe devolver una coleccion con los objetos cargados que son mas peligrosos que la cosa indicada." {
+        bumblebee.forma(robot)
+        paqueteDeLadrillos.cantidadDeLadrillos(100)
+        bateriaAntiaerea.cambiarATieneMisiles()
+        
+        camion.cargar(bumblebee)
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paqueteDeLadrillos)
+        camion.cargar(bateriaAntiaerea)
+
+        assert.equals([bumblebee, residuosRadioactivos, bateriaAntiaerea], camion.objetosMasPeligrososQue(knightRider))
+        assert.equals([residuosRadioactivos], camion.objetosMasPeligrososQue(bateriaAntiaerea))
+        assert.equals([], camion.objetosMasPeligrososQue(residuosRadioactivos))
+    }
+
+    test "El camion sabe decir si puede circular en la ruta." {
+        bumblebee.forma(robot)
+        paqueteDeLadrillos.cantidadDeLadrillos(100)
+        bateriaAntiaerea.cambiarATieneMisiles()
+        
+        camion.cargar(bumblebee)
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paqueteDeLadrillos)
+        camion.cargar(bateriaAntiaerea)
+        
+        assert.equals(2604, camion.pesoTotal())
+        assert.notThat(camion.puedeCircularEnRuta(ruta9.nivelPeligrosidad()))
+
+        camion.descargar(residuosRadioactivos)
+        camion.descargar(bateriaAntiaerea)
+        camion.descargar(bumblebee)
+
+        assert.equals(1224, camion.pesoTotal())
+        assert.equals([paqueteDeLadrillos], camion.cosas())
+        assert.that(camion.puedeCircularEnRuta(ruta9.nivelPeligrosidad()))
+    }
+
+    test "El camion sabe decir si tiene algo que pesa entre dos valores indicados y sabe decir cuál es la cosa más pesada que tiene." {
+        bumblebee.forma(robot)
+        paqueteDeLadrillos.cantidadDeLadrillos(100)
+        bateriaAntiaerea.cambiarATieneMisiles()
+        
+        camion.cargar(bumblebee)
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paqueteDeLadrillos)
+        camion.cargar(bateriaAntiaerea)
+
+        assert.that(camion.tieneAlgoQuePesaEntre(30, 250))
+        assert.equals(bumblebee, camion.cosaMasPesada())
+    }
+
+    test "El camion sabe decir todos los pesos de todas los objetos cargados y además sabe decir la cantidad de bultos que tiene." {
+        paqueteDeLadrillos.cantidadDeLadrillos(100)
+        
+        camion.cargar(bumblebee)
+        camion.cargar(residuosRadioactivos)
+        camion.cargar(paqueteDeLadrillos)
+        camion.cargar(bateriaAntiaerea)
+
+        assert.equals(2604, camion.pesoTotal())
+        assert.that(camion.pesos() == [800, 280, 224, 300])
+    
+        assert.equals(7, camion.totalBultos())
+    }
 }
